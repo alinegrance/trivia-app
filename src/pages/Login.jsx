@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { saveToken } from '../localStorageAPI';
 
-export default class Login extends Component {
+class Login extends Component {
   constructor() {
     super();
 
@@ -20,6 +22,15 @@ export default class Login extends Component {
         buttonDisabled: buttonIsDisabled,
       });
     });
+  };
+
+  clickOnButton = async () => {
+    const { history } = this.props;
+    const response = await fetch('https://opentdb.com/api_token.php?command=request');
+    const { token } = await response.json();
+    saveToken(token);
+    console.log(token);
+    history.push('/play');
   };
 
   render() {
@@ -54,7 +65,7 @@ export default class Login extends Component {
             data-testid="btn-play"
             type="submit"
             disabled={ buttonDisabled }
-            // onClick={ this.clickOnButton }
+            onClick={ this.clickOnButton }
           >
             Entrar
           </button>
@@ -63,3 +74,11 @@ export default class Login extends Component {
     );
   }
 }
+
+export default Login;
+
+Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
