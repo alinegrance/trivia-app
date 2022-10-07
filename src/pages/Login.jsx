@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { saveToken } from '../localStorageAPI';
+import { savePlayer } from '../redux/actions';
 
 class Login extends Component {
   constructor() {
     super();
 
     this.state = {
-      inputName: '',
+      name: '',
       inputEmail: '',
       buttonDisabled: true,
     };
@@ -15,8 +17,8 @@ class Login extends Component {
 
   handleChange = (event) => {
     this.setState({ [event.target.name]: event.target.value }, () => {
-      const { inputName, inputEmail } = this.state;
-      const buttonIsDisabled = inputName.length === 0 || inputEmail.length === 0;
+      const { name, inputEmail } = this.state;
+      const buttonIsDisabled = name.length === 0 || inputEmail.length === 0;
 
       this.setState({
         buttonDisabled: buttonIsDisabled,
@@ -25,16 +27,18 @@ class Login extends Component {
   };
 
   clickOnButton = async () => {
-    const { history } = this.props;
+    const { history, dispatch } = this.props;
+    const { inputEmail, name } = this.state;
     const response = await fetch('https://opentdb.com/api_token.php?command=request');
     const { token } = await response.json();
     saveToken(token);
     console.log(token);
     history.push('/play');
+    dispatch(savePlayer({ gravatarEmail: inputEmail, name }));
   };
 
   render() {
-    const { inputName, inputEmail, buttonDisabled } = this.state;
+    const { name, inputEmail, buttonDisabled } = this.state;
     return (
       <main>
         <div data-testid="page-login">
@@ -43,9 +47,9 @@ class Login extends Component {
               <input
                 data-testid="input-player-name"
                 type="text"
-                name="inputName"
-                placeholder="digite seu e-mail"
-                value={ inputName }
+                name="name"
+                placeholder="digite seu nome"
+                value={ name }
                 onChange={ this.handleChange }
               />
             </form>
@@ -54,7 +58,7 @@ class Login extends Component {
                 data-testid="input-gravatar-email"
                 type="email"
                 name="inputEmail"
-                placeholder="digite seu nome"
+                placeholder="digite seu e-mail"
                 value={ inputEmail }
                 onChange={ this.handleChange }
               />
@@ -75,10 +79,11 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default connect()(Login);
 
 Login.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
