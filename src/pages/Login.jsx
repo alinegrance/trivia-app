@@ -37,6 +37,11 @@ class Login extends Component {
     dispatch(savePlayer({ gravatarEmail: inputEmail, name }));
   };
 
+  goToSettings = () => {
+    const { history } = this.props;
+    history.push('/settings');
+  };
+
   render() {
     const { name, inputEmail, buttonDisabled } = this.state;
     return (
@@ -71,7 +76,14 @@ class Login extends Component {
             disabled={ buttonDisabled }
             onClick={ this.clickOnButton }
           >
-            Entrar
+            Play
+          </button>
+          <button
+            data-testid="btn-settings"
+            type="button"
+            onClick={ this.goToSettings }
+          >
+            Settings
           </button>
         </div>
       </main>
