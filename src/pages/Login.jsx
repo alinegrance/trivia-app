@@ -33,7 +33,7 @@ class Login extends Component {
     const { token } = await response.json();
     saveToken(token);
     console.log(token);
-    history.push('/play');
+    history.push('/game');
     dispatch(savePlayer({ gravatarEmail: inputEmail, name }));
   };
 
