@@ -1,8 +1,8 @@
-import { SAVE_PLAYER } from '../actions';
+import { SAVE_PLAYER, SAVE_ASSERTIONS } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
-  assertions: '',
+  assertions: 0,
   score: 0,
   gravatarEmail: '',
 };
@@ -12,12 +12,16 @@ const playerReducer = (state = INITIAL_STATE, action) => {
   case SAVE_PLAYER:
     return {
       ...state,
-      ...action.payload,
+      gravatarEmail: action.payload.gravatarEmail,
+      name: action.payload.name,
+    };
+  case SAVE_ASSERTIONS:
+    return {
+      ...state,
+      assertions: action.payload,
     };
   default:
-    return {
-      state,
-    };
+    return state;
   }
 };
 

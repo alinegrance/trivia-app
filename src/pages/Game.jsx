@@ -1,8 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { connect } from 'react-redux';
 import Header from '../components/Header';
 import { deleteToken, getToken } from '../localStorageAPI';
 import '../css/game.css';
+import { saveAssertions } from '../redux/actions';
 
 class Game extends React.Component {
   state = {
@@ -13,6 +15,7 @@ class Game extends React.Component {
     answers: [],
     disabled: false,
     timer: 30,
+    assertions: 0,
   };
 
   componentDidMount() {
@@ -56,7 +59,16 @@ class Game extends React.Component {
     this.setState({ answers, correctAnswer });
   };
 
-  answerClick = () => {
+  answerClick = ({ target: { name } }) => {
+    const { dispatch } = this.props;
+    if (name === 'correct') {
+      this.setState((prevState) => ({
+        assertions: prevState.assertions + 1,
+      }), () => {
+        const { assertions } = this.state;
+        dispatch(saveAssertions(assertions));
+      });
+    }
     this.setState({ answered: true });
   };
 
@@ -83,6 +95,7 @@ class Game extends React.Component {
                       className={ answered ? 'correct' : '' }
                       data-testid="correct-answer"
                       disabled={ disabled }
+                      name="correct"
                     >
                       {answer}
                     </button>
@@ -96,6 +109,7 @@ class Game extends React.Component {
                     onClick={ this.answerClick }
                     disabled={ disabled }
                     data-testid={ `wrong-answer-${index}` }
+                    name="wrong"
                   >
                     {answer}
                   </button>
@@ -111,9 +125,10 @@ class Game extends React.Component {
 }
 
 Game.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
 };
 
-export default Game;
+export default connect()(Game);
