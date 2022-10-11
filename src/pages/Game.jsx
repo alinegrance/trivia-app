@@ -11,9 +11,29 @@ class Game extends React.Component {
     answered: false,
     correctAnswer: '',
     answers: [],
+    disabled: false,
+    timer: 30,
   };
 
-  async componentDidMount() {
+  componentDidMount() {
+    const ONE_SECOND = 1000;
+    setInterval(() => {
+      this.setState((prevState) => ({ timer: prevState.timer - 1 }));
+    }, ONE_SECOND);
+    this.gettingData();
+  }
+
+  shouldComponentUpdate() {
+    const { timer } = this.state;
+    return timer >= 1;
+  }
+
+  componentDidUpdate() {
+    const { timer, disabled } = this.state;
+    if (timer === 1 && !disabled) { this.setState({ disabled: true }); }
+  }
+
+  gettingData = async () => {
     const { history } = this.props;
     const expiredToken = 3;
     const token = getToken();
@@ -25,7 +45,7 @@ class Game extends React.Component {
       history.push('/');
     }
     this.setState({ questions: [...results] }, () => this.creatingAnswers());
-  }
+  };
 
   creatingAnswers = () => {
     const { questions, indexQ } = this.state;
@@ -41,7 +61,8 @@ class Game extends React.Component {
   };
 
   render() {
-    const { questions, indexQ, answered, answers, correctAnswer } = this.state;
+    const { questions, indexQ, answered, answers, correctAnswer, disabled,
+      timer } = this.state;
     return (
       <div>
         <Header />
@@ -61,6 +82,7 @@ class Game extends React.Component {
                       type="button"
                       className={ answered ? 'correct' : '' }
                       data-testid="correct-answer"
+                      disabled={ disabled }
                     >
                       {answer}
                     </button>
@@ -72,6 +94,7 @@ class Game extends React.Component {
                     className={ answered ? 'wrong' : '' }
                     type="button"
                     onClick={ this.answerClick }
+                    disabled={ disabled }
                     data-testid={ `wrong-answer-${index}` }
                   >
                     {answer}
@@ -79,6 +102,7 @@ class Game extends React.Component {
                 );
               }) }
             </section>
+            <section><h4>{timer}</h4></section>
           </div>
         )}
       </div>
