@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Header from '../components/Header';
 import { deleteToken, getToken } from '../localStorageAPI';
 import '../css/game.css';
-import { saveAssertions } from '../redux/actions';
+import { rightAnswered } from '../redux/actions';
 
 class Game extends React.Component {
   state = {
@@ -15,7 +15,8 @@ class Game extends React.Component {
     answers: [],
     disabled: false,
     timer: 30,
-    assertions: 0,
+    level: 0,
+    next: false,
   };
 
   componentDidMount() {
@@ -53,28 +54,43 @@ class Game extends React.Component {
   creatingAnswers = () => {
     const { questions, indexQ } = this.state;
     const SORT_NUMBER = 0.5;
+    const TRES = 3;
     const answers = [questions[indexQ].correct_answer,
       ...questions[indexQ].incorrect_answers].sort(() => Math.random() - SORT_NUMBER);
     const correctAnswer = questions[indexQ].correct_answer;
-    this.setState({ answers, correctAnswer });
+    let level = 0;
+    if (questions[indexQ].difficulty === 'easy') level = 1;
+    if (questions[indexQ].difficulty === 'medium') level = 2;
+    if (questions[indexQ].difficulty === 'hard') level = TRES;
+    this.setState({ answers, correctAnswer, level });
   };
 
   answerClick = ({ target: { name } }) => {
+    const { timer, level } = this.state;
     const { dispatch } = this.props;
-    if (name === 'correct') {
-      this.setState((prevState) => ({
-        assertions: prevState.assertions + 1,
-      }), () => {
-        const { assertions } = this.state;
-        dispatch(saveAssertions(assertions));
-      });
-    }
-    this.setState({ answered: true });
+    const DEZ = 10;
+    if (name === 'correct') dispatch(rightAnswered((DEZ + (timer * level))));
+    this.setState({ answered: true, next: true });
+  };
+
+  nextQuestion = () => {
+    const { indexQ } = this.state;
+    const { history } = this.props;
+    const QUATRO = 4;
+    if (indexQ === QUATRO) history.push('/feedback');
+    this.setState({
+      indexQ: indexQ + 1,
+      answered: false,
+      disabled: false,
+      timer: 30,
+      next: false,
+    });
+    this.creatingAnswers();
   };
 
   render() {
     const { questions, indexQ, answered, answers, correctAnswer, disabled,
-      timer } = this.state;
+      timer, next } = this.state;
     return (
       <div>
         <Header />
@@ -117,6 +133,20 @@ class Game extends React.Component {
               }) }
             </section>
             <section><h4>{timer}</h4></section>
+            <section>
+              {
+                next
+                && (
+                  <button
+                    type="button"
+                    data-testid="btn-next"
+                    onClick={ this.nextQuestion }
+                  >
+                    Next
+                  </button>)
+              }
+
+            </section>
           </div>
         )}
       </div>

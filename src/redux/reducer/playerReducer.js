@@ -1,4 +1,4 @@
-import { SAVE_PLAYER, SAVE_ASSERTIONS } from '../actions';
+import { SAVE_PLAYER, RIGHT_ANSWERED } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
@@ -15,10 +15,11 @@ const playerReducer = (state = INITIAL_STATE, action) => {
       gravatarEmail: action.payload.gravatarEmail,
       name: action.payload.name,
     };
-  case SAVE_ASSERTIONS:
+  case RIGHT_ANSWERED:
     return {
       ...state,
-      assertions: action.payload,
+      assertions: state.assertions + 1,
+      score: state.score + action.payload,
     };
   default:
     return state;

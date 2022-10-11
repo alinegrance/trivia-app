@@ -5,9 +5,9 @@ export const savePlayer = (payload) => ({
   payload,
 });
 
-export const SAVE_ASSERTIONS = 'SAVE_ASSERTIONS';
+export const RIGHT_ANSWERED = 'RIGHT_ANSWERED';
 
-export const saveAssertions = (payload) => ({
-  type: SAVE_ASSERTIONS,
+export const rightAnswered = (payload) => ({
+  type: RIGHT_ANSWERED,
   payload,
 });
