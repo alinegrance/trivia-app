@@ -11,3 +11,9 @@ export const rightAnswered = (payload) => ({
   type: RIGHT_ANSWERED,
   payload,
 });
+
+export const PLAY_AGAIN = 'PLAY_AGAIN';
+
+export const playAgain = () => ({
+  type: PLAY_AGAIN,
+});

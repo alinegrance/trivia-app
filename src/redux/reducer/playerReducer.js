@@ -1,4 +1,4 @@
-import { SAVE_PLAYER, RIGHT_ANSWERED } from '../actions';
+import { SAVE_PLAYER, RIGHT_ANSWERED, PLAY_AGAIN } from '../actions';
 
 const INITIAL_STATE = {
   name: '',
@@ -20,6 +20,12 @@ const playerReducer = (state = INITIAL_STATE, action) => {
       ...state,
       assertions: state.assertions + 1,
       score: state.score + action.payload,
+    };
+  case PLAY_AGAIN:
+    return {
+      ...state,
+      assertions: 0,
+      score: 0,
     };
   default:
     return state;
