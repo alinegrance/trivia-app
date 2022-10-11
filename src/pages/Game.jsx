@@ -9,6 +9,8 @@ class Game extends React.Component {
     questions: [],
     indexQ: 0,
     answered: false,
+    correctAnswer: '',
+    answers: [],
   };
 
   async componentDidMount() {
@@ -22,16 +24,24 @@ class Game extends React.Component {
       deleteToken();
       history.push('/');
     }
-    this.setState({ questions: [...results] });
+    this.setState({ questions: [...results] }, () => this.creatingAnswers());
   }
+
+  creatingAnswers = () => {
+    const { questions, indexQ } = this.state;
+    const SORT_NUMBER = 0.5;
+    const answers = [questions[indexQ].correct_answer,
+      ...questions[indexQ].incorrect_answers].sort(() => Math.random() - SORT_NUMBER);
+    const correctAnswer = questions[indexQ].correct_answer;
+    this.setState({ answers, correctAnswer });
+  };
 
   answerClick = () => {
     this.setState({ answered: true });
   };
 
   render() {
-    const { questions, indexQ, answered } = this.state;
-    const sortNumber = 0.5;
+    const { questions, indexQ, answered, answers, correctAnswer } = this.state;
     return (
       <div>
         <Header />
@@ -42,32 +52,32 @@ class Game extends React.Component {
               <h5 data-testid="question-text">{ questions[indexQ].question }</h5>
             </section>
             <section data-testid="answer-options">
-              {
-                [
-                  <button
-                    type="button"
-                    key={ 5 }
-                    data-testid="correct-answer"
-                    onClick={ this.answerClick }
-                    name="rigth"
-                    className={ answered && 'correct' }
-                  >
-                    { questions[indexQ].correct_answer }
-                  </button>,
-                  ...questions[indexQ].incorrect_answers.map((element, index) => (
+              { answers.map((answer, index) => {
+                if (answer === correctAnswer) {
+                  return (
                     <button
-                      type="button"
-                      key={ index }
+                      key={ 5 }
                       onClick={ this.answerClick }
-                      data-testid={ `wrong-answer-${index}` }
-                      name="wrong"
-                      className={ answered && 'wrong' }
+                      type="button"
+                      className={ answered ? 'correct' : '' }
+                      data-testid="correct-answer"
                     >
-                      { element }
+                      {answer}
                     </button>
-                  )),
-                ].sort(() => Math.random() - sortNumber)
-              }
+                  );
+                }
+                return (
+                  <button
+                    key={ index }
+                    className={ answered ? 'wrong' : '' }
+                    type="button"
+                    onClick={ this.answerClick }
+                    data-testid={ `wrong-answer-${index}` }
+                  >
+                    {answer}
+                  </button>
+                );
+              }) }
             </section>
           </div>
         )}
