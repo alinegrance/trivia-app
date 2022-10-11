@@ -2,11 +2,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Header from '../components/Header';
 import { deleteToken, getToken } from '../localStorageAPI';
+import '../css/game.css';
 
 class Game extends React.Component {
   state = {
     questions: [],
     indexQ: 0,
+    answered: false,
   };
 
   async componentDidMount() {
@@ -23,8 +25,12 @@ class Game extends React.Component {
     this.setState({ questions: [...results] });
   }
 
+  answerClick = () => {
+    this.setState({ answered: true });
+  };
+
   render() {
-    const { questions, indexQ } = this.state;
+    const { questions, indexQ, answered } = this.state;
     const sortNumber = 0.5;
     return (
       <div>
@@ -37,17 +43,14 @@ class Game extends React.Component {
             </section>
             <section data-testid="answer-options">
               {
-                // [...questions[indexQ].incorrect_answers,
-                //   questions[indexQ].correct_answer]
-                //   .sort(() => Math.random() - sortNumber)
-                //   .map((element, index) => (
-                //     <button type="button" key={ index }>{ element }</button>
-                //   ))
                 [
                   <button
                     type="button"
                     key={ 5 }
                     data-testid="correct-answer"
+                    onClick={ this.answerClick }
+                    name="rigth"
+                    className={ answered && 'correct' }
                   >
                     { questions[indexQ].correct_answer }
                   </button>,
@@ -55,7 +58,10 @@ class Game extends React.Component {
                     <button
                       type="button"
                       key={ index }
+                      onClick={ this.answerClick }
                       data-testid={ `wrong-answer-${index}` }
+                      name="wrong"
+                      className={ answered && 'wrong' }
                     >
                       { element }
                     </button>
