@@ -66,11 +66,11 @@ class Game extends React.Component {
   };
 
   answerClick = ({ target: { name } }) => {
+    this.setState({ answered: true, next: true });
     const { timer, level } = this.state;
     const { dispatch } = this.props;
     const DEZ = 10;
     if (name === 'correct') dispatch(rightAnswered((DEZ + (timer * level))));
-    this.setState({ answered: true, next: true });
   };
 
   nextQuestion = () => {
