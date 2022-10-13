@@ -27,7 +27,7 @@ describe('Testando a tela de Login', () => {
         expect(emailLogin).toBeInTheDocument()
 
         const { pathname } = history.location;
-        expect(pathname).toBe('/play')
+        expect(pathname).toBe('/game')
     })
 
     it('Login test Settings', async () => {
@@ -45,7 +45,7 @@ describe('Testando a tela de Login', () => {
     })
 
     it('does clicking the rank button take you to the rank screen?', async () => {
-        const { history } = renderWithRouterAndRedux(<App />, {}, '/feedback');
+        const { history } = renderWithRouterAndRedux(<App />,'/feedback');
 
         expect(screen.getByRole('button', { name: /ranking/i })).toBeInTheDocument();
 
@@ -55,7 +55,7 @@ describe('Testando a tela de Login', () => {
     });
 
       it('The "Play Again" button should return to the home screen', () => {
-        const { history } = renderWithRouterAndRedux(<App />, {}, '/feedback');
+        const { history } = renderWithRouterAndRedux(<App />,'/feedback');
 
         expect(screen.getByTestId('btn-play-again')).toBeInTheDocument();
 
