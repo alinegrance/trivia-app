@@ -5,8 +5,9 @@ import App from '../../App';
 import userEvent from '@testing-library/user-event';
 
 describe('Gameplay screen', () => {
+  jest.setTimeout(6000);
   it('shows all desired elements', async () => {
-    const { history } = renderWithRouterAndRedux(<App />, '/play');
+    const { history } = renderWithRouterAndRedux(<App />, '/game');
   
     const playerName = screen.getByTestId('header-player-name');
     expect(playerName).toBeInTheDocument();
@@ -27,7 +28,7 @@ describe('Gameplay screen', () => {
   });
 
   it('shows the right behaviours', async () => {
-    const { history } = renderWithRouterAndRedux(<App />, '/play');
+    const { history } = renderWithRouterAndRedux(<App />, '/game');
 
     const buttonCorrectAnswer = await waitFor(() =>
       screen.getByTestId('correct-answer')
