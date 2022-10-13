@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event';
 
 describe('Gameplay screen', () => {
   it('shows all desired elements', async () => {
-    const { history } = renderWithRouterAndRedux(<App />, {}, '/play');
+    const { history } = renderWithRouterAndRedux(<App />, '/play');
   
     const playerName = screen.getByTestId('header-player-name');
     expect(playerName).toBeInTheDocument();
@@ -27,7 +27,7 @@ describe('Gameplay screen', () => {
   });
 
   it('shows the right behaviours', async () => {
-    const { history } = renderWithRouterAndRedux(<App />, {}, '/play');
+    const { history } = renderWithRouterAndRedux(<App />, '/play');
 
     const buttonCorrectAnswer = await waitFor(() =>
       screen.getByTestId('correct-answer')
