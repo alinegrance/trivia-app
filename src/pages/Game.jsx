@@ -163,4 +163,3 @@ Game.propTypes = {
 
 export default connect()(Game);
 
-// n passou de prima
