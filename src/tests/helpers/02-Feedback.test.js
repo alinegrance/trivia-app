@@ -43,4 +43,24 @@ describe('Testando a tela de Login', () => {
         const { pathname } = history.location;
         expect(pathname).toBe('/settings')
     })
+
+    it('does clicking the rank button take you to the rank screen?', async () => {
+        const { history } = renderWithRouterAndRedux(<App />, {}, '/feedback');
+
+        expect(screen.getByRole('button', { name: /ranking/i })).toBeInTheDocument();
+
+        userEvent.click(screen.getByRole('button', { name: /ranking/i }));
+
+        expect(history.location.pathname).toBe('/ranking');
+    });
+
+      it('The "Play Again" button should return to the home screen', () => {
+        const { history } = renderWithRouterAndRedux(<App />, {}, '/feedback');
+
+        expect(screen.getByTestId('btn-play-again')).toBeInTheDocument();
+
+        userEvent.click(screen.getByTestId('btn-play-again'));
+        const { pathname } = history.location;
+        expect(pathname).toBe('/');
+      });
 })
